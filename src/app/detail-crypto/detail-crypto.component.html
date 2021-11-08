@@ -1,0 +1,78 @@
+<table border="2">
+    <tr>
+            <th>Date</th>
+            <th>Movment</th>
+            <th>type</th>	
+            <th>Amount</th>
+            <th>Price($)</th>		
+            <th>Result($)</th>
+            <th>Sum</th>		
+            <th>Average</th>	
+            <th>Reste</th>
+            <th>Earn</th>
+    </tr>
+    <tr *ngFor="let action of actions">
+        <td>{{action.date | date:'dd/MM/yy - H:mm' }}</td>
+        <td>{{action.movment}}</td>
+        <td>{{action.type}}</td>	
+        <td>{{action.amount | number: '1.0-4'}}</td>
+        <td>{{action.price | number: '1.0-4'}}</td>		
+        <td>{{action.result | number: '1.0-4'}}</td>			
+        <td>{{action.sumAmount  | number: '1.0-4'}}</td>
+        <td>{{action.averagePrice  | number: '1.0-4'}}</td>
+        <td>{{action.averagePrice * action.sumAmount  | number: '1.0-4'}}
+        <td><span *ngIf="action.movment=='Vente'">{{action.resultSell  | number: '1.0-4'}}</span></td>
+    
+    </tr>
+    </table>
+    
+    
+    <h1>Situation</h1>
+    
+    <table border="2">
+        <tr>
+            <th>Nombre action
+            </th>
+            <th>Prix moyen
+            </th>
+            <th>Reste
+            </th>
+            <th>Gain / perte
+            </th>
+        </tr>
+        <tr>
+            <td>{{lastAmount | number: '1.0-2'}}
+            </td>
+            <td>{{lastPrice | number: '1.0-2'}}
+            </td>
+            <td>{{lastPrice*lastAmount | number: '1.0-2'}}
+            </td>
+            <td>{{cumulGain | number: '1.0-2'}}
+            </td>
+        </tr>
+    </table>
+    
+    <h1>Ajout Ligne</h1>
+    
+    <br />
+    <ul>
+        <li *ngFor="let typeAction of types">
+            <button (click)="positionType(typeAction)">{{typeAction}}</button>
+        </li>
+    </ul>
+    
+    <br />
+    <span style="font-weight:bold; font-size:20px;"> {{type}}</span>
+    
+    <br />
+    
+    <br />
+    <label for="amount-action">Your amount</label>
+    <input id="amount-action" placeholder="amount" #amount type="number"/>
+    <br />
+    <label for="price-action">Your Price</label>
+    <input id="price-action" placeholder="price" #price type="number"/>	
+    <br />
+    <br />
+    <button (click)="createAction(type,amount.valueAsNumber,price.valueAsNumber)">Send</button>
+    

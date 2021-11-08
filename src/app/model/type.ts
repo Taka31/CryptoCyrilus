@@ -1,0 +1,1 @@
+export const TYPE : string[] = ["Achat","Vente"];
