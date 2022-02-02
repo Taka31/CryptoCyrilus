@@ -1,7 +1,7 @@
+import { TypeAction } from './type';
 export class Action{
 	
-	date:Date ;
-	type:string ="BTC"; 
+	date:Date ;	
 	movment:string;	
 	price:number;
 	amount:number;
@@ -22,7 +22,7 @@ export class Action{
 	}	
 
 	calculateStayAmount(previousAmount:number){
-		if(this.movment==="Vente"){
+		if(this.movment===TypeAction.Sell){
 			this.sumAmount=previousAmount-this.amount;
 		}else{
 			this.sumAmount=previousAmount+this.amount;
@@ -33,7 +33,7 @@ export class Action{
 
 	calculateAveragePrice(previousAmount:number, previousPrice: number){
 
-		if(this.movment==="Vente"){
+		if(this.movment===TypeAction.Sell){
 			this.averagePrice=previousPrice;
 			//console.log("new averagePrice is "+this.averagePrice);
 		}else{
@@ -44,7 +44,7 @@ export class Action{
 
 	calculateSellResult(previousPrice : number){
 
-		if(this.movment==="Vente"){
+		if(this.movment===TypeAction.Sell){
 			this.resultSell=this.result - (this.amount*previousPrice);
 			
 		}

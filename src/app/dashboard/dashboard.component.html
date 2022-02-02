@@ -1,1 +1,37 @@
-BIENVENUE SUR LA PAGE PRINCIPAL DES CRYPTUS
+<span class="title-dashboard-label">Welcome on <span class="cyrilus-label">Cyrilus</span> Cryptus</span>
+
+<div *ngIf='isAllowed'>
+    <div *ngIf='!isLoading'>
+        <span class="my-cryptos-label">My Cryptos Lists : </span>
+        <table>
+            <tr>
+            <th>Nom Crypto</th>
+            <th>Number owned</th>
+            <th>Position Price</th>
+            <th>Invested money</th>
+            <th>Earned</th>
+            <th>Actual Price</th>
+            <th>Situation</th>
+            <th>actual price / position</th>
+            </tr>
+            <tr *ngFor='let crypto of myCryptos'>
+                <td><a routerLinkActive="active" routerLink="/cryptoDetail/{{crypto.id}}/{{crypto.name}}" class="crypto-name-link-label">{{crypto.name}}</a></td>
+                <td><span> |   {{crypto.number_owned}}</span></td>
+                <td><span> |   {{crypto.position_price}}</span></td>
+                <td><span> |   {{crypto.invested_money}}</span></td>
+                <td><span> |   {{crypto.earned_lost}}</span></td>
+                <td><span> |   {{crypto.actual_price}}</span></td>
+                <td [ngClass]="crypto.actual_price*crypto.number_owned - crypto.invested_money > 0 ? 'winner' : 'looser'"><span> | {{crypto.actual_price*crypto.number_owned - crypto.invested_money | number: '1.0-2' }}</span></td>
+                <td [ngClass]="crypto.actual_price/crypto.position_price > 1 ? 'winner' : 'looser'"><span> | {{crypto.actual_price/crypto.position_price | percent }}</span></td>
+            </tr>
+        </table>   
+    </div>
+    <div *ngIf='isLoading'>
+        <label>Loading...</label>
+    </div>
+</div>
+<div *ngIf='!isAllowed'>
+    <label class="allowed">you are not allowed to use this application, contact the admin</label>
+</div>
+
+

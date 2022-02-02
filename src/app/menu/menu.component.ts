@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { CryptoBusinessService } from '../crypto-business.service';
 
 @Component({
   selector: 'app-menu',
@@ -9,17 +10,23 @@ import { ActivatedRoute } from '@angular/router';
 export class MenuComponent implements OnInit {
 
 	product_id: string;
+  isAllowed:boolean =false;
 
-  constructor(private actRoute: ActivatedRoute) { 
-  	 this.product_id = this.actRoute.snapshot.params.id;
-  	 console.log(this.product_id);
+  constructor(private actRoute: ActivatedRoute,private cryptoService:CryptoBusinessService) { 
+  	 this.product_id = this.actRoute.snapshot.params.id;  	 
   }
 
   ngOnInit(): void {
-
-  	  /*const id = this.route.snapshot.paramMap.id;
-  	  console.log(id);*/
-
+    this.cryptoService.checkUser().subscribe(result=>{
+      const obj = JSON.parse(JSON.stringify(result))
+      const allowed = obj['number']==1?true:false;
+      if(allowed){
+        this.isAllowed =true;        
+      }else{
+         this.isAllowed =false;
+      }
+    })
   }
-
 }
+
+

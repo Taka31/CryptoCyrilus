@@ -1,4 +1,9 @@
 import { Component } from '@angular/core';
+import { AngularFireAuth } from '@angular/fire/auth';
+import { auth } from 'firebase/app';
+
+
+
 
 @Component({
   selector: 'app-root',
@@ -6,5 +11,16 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })		
 export class AppComponent {
-  title = 'Cryptus';
+  title = 'Cyrilus Cryptus';  
+
+  constructor(public auth:AngularFireAuth){  }
+
+  signInClicked(): void{
+    this.auth.signInWithPopup(new auth.GoogleAuthProvider());
+  }
+
+  signOutClicked():void{ 
+    this.auth.signOut();
+  }
+
 }

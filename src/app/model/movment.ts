@@ -3,4 +3,5 @@ export interface Movment {
 	amount : number
 	action: string;
 	date:Date;
+	id_crypto:string;
 }

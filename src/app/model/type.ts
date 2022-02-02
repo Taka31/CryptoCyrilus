@@ -1,1 +1,4 @@
-export const TYPE : string[] = ["Achat","Vente"];
+export enum TypeAction{
+    Sell="Sell",
+    Buy="Buy"
+}

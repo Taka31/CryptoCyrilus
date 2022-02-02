@@ -1,2 +1,16 @@
-<app-menu></app-menu>
-<router-outlet></router-outlet>
+<div *ngIf="auth.user | async">
+    <app-menu></app-menu>
+    <router-outlet></router-outlet>
+    <br /><br /><br /><br /><br />
+    <div>
+        <button (click)="signOutClicked()">Sign out</button>
+    </div>
+</div>
+<div *ngIf="!(auth.user | async)">
+    <button (click)="signInClicked()">Sign in</button>
+</div>  
+
+
+
+
+    

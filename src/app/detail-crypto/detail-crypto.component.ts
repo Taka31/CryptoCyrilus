@@ -1,13 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Type } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Action } from '../model/action';
-import { TYPE } from '../model/type';
-import { BTC } from '../model/cryptoName';
-import { XRP } from '../model/cryptoName';
-import { ICP } from '../model/cryptoName';
+import { TypeAction } from '../model/type';
 import { Movment } from '../model/movment';
-import { EnumNameCrypto } from '../model/enumNameCrypto';
 import { Router } from '@angular/router';
+import { CryptoBusinessService } from '../crypto-business.service';
+import { DatePipe } from '@angular/common'
 
 @Component({
   selector: 'app-detail-crypto',
@@ -17,16 +15,19 @@ import { Router } from '@angular/router';
 export class DetailCryptoComponent implements OnInit {
 
   actions: Action[] = [];
-  action: Action | undefined;
-  types = TYPE;
-  type: string = "Achat";
-  btcTab: Movment[] | undefined;
+  actionModel: Action =new Action(new Date(),TypeAction.Buy,0.0,0.0,0.0,0.0)
+  type: TypeAction = TypeAction.Buy;
+  btcTab: Movment[] | undefined;   
+  idCrypto:string =""; 
+  nameCrypto:string="";
 
-  lastAmount: number = 0;
-  lastPrice: number = 0;
-  cumulGain: number = 0;
+  situation_owned_number: number = 0;
+  situation_position_price: number = 0;
+  situation_earned_lost: number = 0;
 
-  constructor(private route: ActivatedRoute, private router: Router) {
+  isLoading = true;
+
+  constructor(private route: ActivatedRoute, private router: Router, private cryptoService:CryptoBusinessService,public datepipe: DatePipe) {
 
   };
 
@@ -43,74 +44,83 @@ export class DetailCryptoComponent implements OnInit {
 
   init() {
     this.clean();
-    var value = this.route.snapshot.paramMap.get('id');
+    this.idCrypto = this.route.snapshot.paramMap.get('id')!;
+    this.nameCrypto = this.route.snapshot.paramMap.get('name')!;
+        console.log("Crypto with id :"+this.idCrypto+" Loading....");            
 
-    console.log(value);
-
-    switch (value) {
-      case EnumNameCrypto.XRP:
-        console.log("XPR Loaded....");
-        this.btcTab = XRP;
-        break;
-        case EnumNameCrypto.ICP:
-        console.log("ICP Loaded....");
-        this.btcTab = ICP;
-        break;
-      default:
-        console.log("BTC Loaded....");
-        this.btcTab = BTC;
-        break;
-    }
-
-    for (var i = 0; i < this.btcTab.length; i++) {
-      console.log(this.btcTab[i].date)
-      this.createAction(this.btcTab[i].action, this.btcTab[i].amount, this.btcTab[i].price,this.btcTab[i].date);
-    }
+        this.cryptoService.getMovments(this.idCrypto).subscribe(movments=> {
+          this.btcTab=movments;
+          if(this.btcTab){
+            for (var i = 0; i < this.btcTab.length; i++) {              
+              this.createAction(this.btcTab[i].action, this.btcTab[i].amount, this.btcTab[i].price,this.btcTab[i].date);           
+            }
+            this.initSituation();
+          }else{
+            console.log("NO RESULT");
+          }
+          this.isLoading=false;  
+        });         
   }
 
-  createAction(typeTemp: string, amount: number, price: number, date:Date=new Date()): void {   
-    console.log("ma date est "+date)
+  createAction(buyOrNot: string, amount: number, price: number, date:Date=new Date()): void {    
+    
+    var action: Action;
+    
     if (this.actions.length > 0) {
-      this.action = new Action(date,typeTemp, amount, price, this.actions[this.actions.length - 1].sumAmount, this.actions[this.actions.length - 1].averagePrice);
+      action = new Action(date,buyOrNot, amount, price, this.actions[this.actions.length - 1].sumAmount, this.actions[this.actions.length - 1].averagePrice);
     } else {
-      this.action = new Action(date,typeTemp, amount, price, 0, 0);
+      action = new Action(date,buyOrNot, amount, price, 0, 0);
     }
 
-    this.actions.push(this.action);
-    this.initSituation();
+    this.actions.push(action);   
   }
 
-  positionType(value: string) {
-    //console.log(" new value is "+value)
-    this.type = value;
+  changePosition() {
+    this.type==TypeAction.Buy?this.type=TypeAction.Sell:this.type=TypeAction.Buy;    
+  }
+
+  addMovment(): void{
+    //call API
+    var sellBuyBoolean=0;
+    if(this.type==TypeAction.Sell){
+      sellBuyBoolean=1;
+    }
+
+    const dateTransform=this.datepipe.transform(this.actionModel.date,'yyyy-MM-dd');
+    this.cryptoService.addMovment(this.actionModel.price,this.actionModel.amount,sellBuyBoolean,this.idCrypto,dateTransform).subscribe(()=>this.init());
+    
   }
 
 
   initSituation(): void {
 
     if (this.actions.length > 0) {
-      this.lastAmount = this.actions[this.actions.length - 1].sumAmount;
-      this.lastPrice = this.actions[this.actions.length - 1].averagePrice;
-      this.initSumEarn()
+      this.situation_owned_number = this.actions[this.actions.length - 1].sumAmount;
+      this.situation_position_price = this.actions[this.actions.length - 1].averagePrice;      
+      if(this.situation_owned_number<0.0000000001){
+        this.situation_position_price=0;
+      }
+      this.initSumEarn()      
+      this.cryptoService.updateCryptoSituation(this.situation_owned_number,this.situation_position_price, this.situation_earned_lost,this.idCrypto).subscribe();
     }
 
   }
 
   initSumEarn() {
-    this.cumulGain = 0;
+    this.situation_earned_lost = 0;
     for (var i = this.actions.length - 1; i >= 0; i--) {
-      this.cumulGain = this.cumulGain + this.actions[i].resultSell;
+      this.situation_earned_lost = this.situation_earned_lost + this.actions[i].resultSell;
     }
   }
 
   clean() {
     this.actions = [];
-    this.action = undefined;
-    this.type = "Achat";
-    this.btcTab = [];
-    this.lastAmount = 0;
-    this.lastPrice = 0;
-    this.cumulGain = 0;
+//    this.actionModel = new Action(new Date(),TypeAction.Buy,0.0,0.0,0.0,0.0);
+    this.type = TypeAction.Buy;
+    this.btcTab = [];    
+    this.situation_owned_number = 0;
+    this.situation_position_price = 0;
+    this.situation_earned_lost = 0;
   }
 
 
