@@ -15,6 +15,7 @@ export class DashboardComponent implements OnInit {
   myCryptos : CryptoDescriptionSituation[] = [];
   isLoading:boolean =true;
   isAllowed:boolean =false;
+  isInformationHidden=false;
 
   ngOnInit(): void {   
 
@@ -43,6 +44,10 @@ export class DashboardComponent implements OnInit {
         element.actual_price=obj[element.api_name]["usd"];      
       })
     })
+  }
+
+  hideInformation(){
+    this.isInformationHidden=!this.isInformationHidden;
   }
 
   
