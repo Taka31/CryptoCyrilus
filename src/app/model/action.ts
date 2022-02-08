@@ -1,31 +1,26 @@
 import { TypeAction } from './type';
+import { Movment } from './movment';
 export class Action{
 	
-	date:Date ;	
-	movment:string;	
-	price:number;
-	amount:number;
+	movment:Movment;	
 	result:number;		
 	sumAmount:number=0;
 	averagePrice:number=0;
 	resultSell:number=0;
 
-	constructor(date : Date,movment : string, amount: number, price: number, previousAmount:number, previousPrice: number){
-			this.date=date;
+	constructor(movment:Movment, previousAmount:number, previousPrice: number){
 			this.movment=movment;
-			this.price=price;		
-			this.amount=amount;			
-			this.result=this.amount*this.price;
+			this.result=this.movment.amount*this.movment.price;
 			this.calculateStayAmount(previousAmount);			
 			this.calculateAveragePrice(previousAmount, previousPrice);	
 			this.calculateSellResult(previousPrice);
 	}	
 
 	calculateStayAmount(previousAmount:number){
-		if(this.movment===TypeAction.Sell){
-			this.sumAmount=previousAmount-this.amount;
+		if(this.movment.action===TypeAction.Sell){
+			this.sumAmount=previousAmount-this.movment.amount;
 		}else{
-			this.sumAmount=previousAmount+this.amount;
+			this.sumAmount=previousAmount+this.movment.amount;
 		}
 
 		//console.log("new sumValue is "+this.sumAmount);
@@ -33,7 +28,7 @@ export class Action{
 
 	calculateAveragePrice(previousAmount:number, previousPrice: number){
 
-		if(this.movment===TypeAction.Sell){
+		if(this.movment.action===TypeAction.Sell){
 			this.averagePrice=previousPrice;
 			//console.log("new averagePrice is "+this.averagePrice);
 		}else{
@@ -44,8 +39,8 @@ export class Action{
 
 	calculateSellResult(previousPrice : number){
 
-		if(this.movment===TypeAction.Sell){
-			this.resultSell=this.result - (this.amount*previousPrice);
+		if(this.movment.action===TypeAction.Sell){
+			this.resultSell=this.result - (this.movment.amount*previousPrice);
 			
 		}
 	}

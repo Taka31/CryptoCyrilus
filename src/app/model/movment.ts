@@ -1,7 +1,10 @@
 export interface Movment {
+	id?:number,
 	price : number,
-	amount : number
-	action: string;
-	date:Date;
-	id_crypto:string;
+	amount : number,
+	date : Date,
+	id_user?:string,
+	action:string,
+	id_crypto?:string,
+	isDeleted?:boolean;
 }

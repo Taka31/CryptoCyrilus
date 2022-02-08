@@ -15,9 +15,8 @@ import { DatePipe } from '@angular/common'
 export class DetailCryptoComponent implements OnInit {
 
   actions: Action[] = [];
-  actionModel: Action =new Action(new Date(),TypeAction.Buy,0.0,0.0,0.0,0.0)
-  type: TypeAction = TypeAction.Buy;
-  btcTab: Movment[] | undefined;   
+  actionModelForm: Action =new Action({amount:0.0,price:0.0,action:TypeAction.Buy,date:new Date()},0.0,0.0)
+  typeActionForm: TypeAction = TypeAction.Buy;    
   idCrypto:string =""; 
   nameCrypto:string="";
 
@@ -48,11 +47,12 @@ export class DetailCryptoComponent implements OnInit {
     this.nameCrypto = this.route.snapshot.paramMap.get('name')!;
         console.log("Crypto with id :"+this.idCrypto+" Loading....");            
 
-        this.cryptoService.getMovments(this.idCrypto).subscribe(movments=> {
-          this.btcTab=movments;
-          if(this.btcTab){
-            for (var i = 0; i < this.btcTab.length; i++) {              
-              this.createAction(this.btcTab[i].action, this.btcTab[i].amount, this.btcTab[i].price,this.btcTab[i].date);           
+        this.cryptoService.getMovments(this.idCrypto).subscribe(movmentsTab=> {          
+          if(movmentsTab){
+            for (var i = 0; i < movmentsTab.length; i++) {  
+              if(!movmentsTab[i].isDeleted){
+                this.createAction(movmentsTab[i]);   
+              }       
             }
             this.initSituation();
           }else{
@@ -62,32 +62,32 @@ export class DetailCryptoComponent implements OnInit {
         });         
   }
 
-  createAction(buyOrNot: string, amount: number, price: number, date:Date=new Date()): void {    
+  createAction(movment:Movment): void {    
     
     var action: Action;
     
     if (this.actions.length > 0) {
-      action = new Action(date,buyOrNot, amount, price, this.actions[this.actions.length - 1].sumAmount, this.actions[this.actions.length - 1].averagePrice);
+      action = new Action(movment, this.actions[this.actions.length - 1].sumAmount, this.actions[this.actions.length - 1].averagePrice);
     } else {
-      action = new Action(date,buyOrNot, amount, price, 0, 0);
+      action = new Action(movment, 0, 0);
     }
 
     this.actions.push(action);   
   }
 
   changePosition() {
-    this.type==TypeAction.Buy?this.type=TypeAction.Sell:this.type=TypeAction.Buy;    
+    this.typeActionForm==TypeAction.Buy?this.typeActionForm=TypeAction.Sell:this.typeActionForm=TypeAction.Buy;    
   }
 
   addMovment(): void{
     //call API
     var sellBuyBoolean=0;
-    if(this.type==TypeAction.Sell){
+    if(this.typeActionForm==TypeAction.Sell){
       sellBuyBoolean=1;
     }
 
-    const dateTransform=this.datepipe.transform(this.actionModel.date,'yyyy-MM-dd');
-    this.cryptoService.addMovment(this.actionModel.price,this.actionModel.amount,sellBuyBoolean,this.idCrypto,dateTransform).subscribe(()=>this.init());
+    const dateTransform=this.datepipe.transform(this.actionModelForm.movment.date,'yyyy-MM-dd');
+    this.cryptoService.addMovment(this.actionModelForm.movment.price,this.actionModelForm.movment.amount,sellBuyBoolean,this.idCrypto,dateTransform).subscribe(()=>this.init());
     
   }
 
@@ -115,12 +115,18 @@ export class DetailCryptoComponent implements OnInit {
 
   clean() {
     this.actions = [];
-//    this.actionModel = new Action(new Date(),TypeAction.Buy,0.0,0.0,0.0,0.0);
-    this.type = TypeAction.Buy;
-    this.btcTab = [];    
+    this.typeActionForm = TypeAction.Buy;    
     this.situation_owned_number = 0;
     this.situation_position_price = 0;
     this.situation_earned_lost = 0;
+  }
+
+  removeMovment(id? :number){
+    if(id){
+      console.log("je vais supprimer la ligne "+id);
+      this.cryptoService.deleteMovment(id).subscribe(()=>this.init());
+    }
+    
   }
 
 

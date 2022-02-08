@@ -37,21 +37,21 @@
     
     <br /><br />   
 
-    <div *ngIf="type==='Sell';then sell else buy"></div>
+    <div *ngIf="typeActionForm==='Sell';then sell else buy"></div>
 
-    <ng-template #sell><span style="font-weight:bold; font-size:30px; color:red"> {{type}}</span></ng-template>
-    <ng-template #buy><span style="font-weight:bold; font-size:30px; color:blue"> {{type}}</span></ng-template>
+    <ng-template #sell><span style="font-weight:bold; font-size:30px; color:red"> {{typeActionForm}}</span></ng-template>
+    <ng-template #buy><span style="font-weight:bold; font-size:30px; color:blue"> {{typeActionForm}}</span></ng-template>
    
     
     <br /><br />
     <label for="date-action">Your Date</label>
-    <input [ngModel]="actionModel.date | date:'yyyy-MM-dd'" (ngModelChange)="actionModel.date = $event" type="date" />
+    <input [ngModel]="actionModelForm.movment.date | date:'yyyy-MM-dd'" (ngModelChange)="actionModelForm.movment.date = $event" type="date" />
     <br /><br />
     <label for="price-action">Your Price</label>
-    <input id="price-action" placeholder="price"  [(ngModel)]="actionModel.price" #price type="number"/>	
+    <input id="price-action" placeholder="price"  [(ngModel)]="actionModelForm.movment.price" #price type="number"/>	
     <br /><br />
     <label for="amount-action">Your amount</label>
-    <input id="amount-action" placeholder="amount" [(ngModel)]="actionModel.amount" #amount type="number"/>   
+    <input id="amount-action" placeholder="amount" [(ngModel)]="actionModelForm.movment.amount" #amount type="number"/>   
     <br />
     <br />
     <button (click)="addMovment()">Send</button>
@@ -69,17 +69,19 @@
             <th>Position</th>	
             <th>Invested</th>
             <th>Earned</th>
+            <th>Remove</th>
     </tr>
     <tr *ngFor="let action of actions">
-        <td>{{action.date | date:'dd/MM/yy - H:mm' }}</td>
-        <td>{{action.movment}}</td>    
-        <td>{{action.price | number: '1.0-4'}}</td>		
-        <td>{{action.amount | number: '1.0-12'}}</td>
+        <td>{{action.movment.date | date:'dd/MM/yy - H:mm' }}</td>
+        <td>{{action.movment.action}}</td>    
+        <td>{{action.movment.price | number: '1.0-4'}}</td>		
+        <td>{{action.movment.amount | number: '1.0-12'}}</td>
         <td>{{action.result | number: '1.0-4'}}</td>			
         <td>{{action.sumAmount  | number: '1.0-12'}}</td>
         <td>{{action.averagePrice  | number: '1.0-4'}}</td>
         <td>{{action.averagePrice * action.sumAmount  | number: '1.0-4'}}
-        <td><span *ngIf="action.movment=='Sell'">{{action.resultSell  | number: '1.0-4'}}</span></td>
+        <td><span *ngIf="action.movment.action=='Sell'">{{action.resultSell  | number: '1.0-4'}}</span></td>
+        <td><button (click)="removeMovment(action.movment.id)">remove</button></td>
     
     </tr>
     </table>

@@ -31,8 +31,8 @@ export class CryptoBusinessService {
   getMovments(id : string) : Observable<Movment[]>{
     return new Observable<Movment[]>(observer=>{
       this.auth.user.subscribe(user=>{
-        user && user.getIdToken().then(toker=>{
-          if(user && toker){
+        user && user.getIdToken().then(token=>{
+          if(user && token){
             this.http.get<Movment[]>(`/api/movments/${id}/user/${user.uid}`).subscribe(movments=>{
               observer.next(movments);
             });
@@ -42,6 +42,14 @@ export class CryptoBusinessService {
         })
       })
     })
+  }
+
+  deleteMovment(idMovment : number):Observable<any>{
+    return new Observable<any>(observer=>{
+      this.http.get<any>(`/api/removeMovment/${idMovment}`).subscribe(()=>{
+        observer.next();
+      });
+    });
   }
 
   getMyCryptos() : Observable<CryptoDescriptionSituation[]> {
