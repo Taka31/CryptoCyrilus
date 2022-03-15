@@ -60,19 +60,18 @@ export class DashboardComponent implements OnInit {
   }
 
   updatePrice(){
-    this.myCryptos.forEach((element)=>{
 
-      if(element.api_name){
-        this.geckoService.price(element.api_name).subscribe(x =>{
-          var obj = JSON.parse(JSON.stringify(x));
-          element.actual_price=obj[element.api_name]["usd"];      
-        })
-      }else{
-        element.actual_price=0;  
-      }
+    this.geckoService.price(this.myCryptos).subscribe((x)=>{
+      var obj = JSON.parse(JSON.stringify(x));      
 
-     
-    })
+      this.myCryptos.forEach(element=>{
+        if(element.api_name){          
+          element.actual_price=obj[element.api_name]["usd"];
+        }        
+      })
+    }
+
+    );
   }
 
   hideInformation(){
