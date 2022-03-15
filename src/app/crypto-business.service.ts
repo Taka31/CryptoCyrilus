@@ -76,9 +76,8 @@ export class CryptoBusinessService {
     return new Observable<Action>(observer=>
         this.auth.user.subscribe(user=>{
           user && user.getIdToken().then(token=>{
-            if(user && token){
-              const userIdValue=user.uid;
-              this.http.post<Action>(`/api/add-movment`,{price,amount,is_sell,id_crypto,date,userIdValue},httpOptionsWithAuthToken(token)).subscribe(action=>{
+            if(user && token){              
+              this.http.post<Action>(`/api/add-movment`,{price,amount,is_sell,id_crypto,date},httpOptionsWithAuthToken(token)).subscribe(action=>{
                 observer.next(action);
               })
             }else{
@@ -94,11 +93,36 @@ export class CryptoBusinessService {
       this.auth.user.subscribe(user=>{
         user && user.getIdToken().then(token=>{
           if(user && token){            
-            const invested_money = (number_owned*position_price).toFixed(2);
-            console.log("VALUE INVESTED"+invested_money);
-            this.http.post<any>(`/api/updateSituation`,{number_owned,position_price,invested_money,earned_lost,id_crypto_description},httpOptionsWithAuthToken(token)).subscribe();
+            const invested_money = (number_owned*position_price).toFixed(2);            
+            this.http.post<any>(`/api/updateSituation`,{number_owned,position_price,invested_money,earned_lost,id_crypto_description},httpOptionsWithAuthToken(token)).subscribe(()=>observer.next());
           }else{
             return observer.next();
+          }
+        })
+      })
+    })
+  }
+
+  getNotUsedCryptoByUser() : Observable<CryptoDescriptionSituation[]>{
+    return new Observable<CryptoDescriptionSituation[]>(observer=>{
+      this.auth.user.subscribe(user=>{
+        user && user.getIdToken().then(token=>{
+          if(user && token){
+            this.http.get<CryptoDescriptionSituation[]>(`/api/get-not-used-Crypto/${user.uid}`).subscribe(cryptos=> observer.next(cryptos))
+          }
+        })
+      })
+    })
+  }
+
+  initializeNewCrypto(id_crypto:string) : Observable<any>{
+    return new Observable<any>(observer=>{
+      this.auth.user.subscribe(user=>{
+        user && user.getIdToken().then(token=>{
+          if(user && token){
+            this.http.post<any>(`/api/initializeCryptoForUser`,{id_crypto},httpOptionsWithAuthToken(token)).subscribe(()=>observer.next());
+          }else{
+            observer.next();
           }
         })
       })

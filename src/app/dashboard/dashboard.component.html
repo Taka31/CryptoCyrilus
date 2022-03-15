@@ -2,9 +2,22 @@
 
 <div *ngIf='isAllowed'>
     <div *ngIf='!isLoading'>
+
+        <select [(ngModel)]='cryptoToAdd' *ngFor='let crypto of myCryptosNotUsed'>
+            <option value={{crypto.id}}>{{crypto.name}}</option>
+            <option value=0>Add...</option>
+        </select>
+
+        
+        <button (click)=addCrypto()>addCrypto</button>     
+
+        <br /> <br />
+        
+        <button (click)=hideInformation()>Hide</button>     
+        
         <span class="my-cryptos-label">My Cryptos Lists : </span>
-        <button (click)=hideInformation()>Hide</button>
-        <br /><br />
+
+        <br />
         <div *ngIf='isInformationHidden'>
         <table>
             <tr>

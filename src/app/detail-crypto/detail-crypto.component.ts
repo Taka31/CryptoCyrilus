@@ -1,9 +1,9 @@
 import { Component, OnInit, Type } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 import { Action } from '../model/action';
 import { TypeAction } from '../model/type';
 import { Movment } from '../model/movment';
-import { Router } from '@angular/router';
 import { CryptoBusinessService } from '../crypto-business.service';
 import { DatePipe } from '@angular/common'
 
@@ -26,19 +26,16 @@ export class DetailCryptoComponent implements OnInit {
 
   isLoading = true;
 
-  constructor(private route: ActivatedRoute, private router: Router, private cryptoService:CryptoBusinessService,public datepipe: DatePipe) {
+  constructor(private route: ActivatedRoute, private cryptoService:CryptoBusinessService,public datepipe: DatePipe) {
 
   };
 
 
   ngOnInit(): void {
     // refresh the same link with diferent parameter    
-    this.route.params.subscribe(routeParams => {
-      console.log("REFRESH PAGE");
+    this.route.params.subscribe(routeParams => {    
       this.init();
     });
-
-
   }
 
   init() {
@@ -122,8 +119,7 @@ export class DetailCryptoComponent implements OnInit {
   }
 
   removeMovment(id? :number){
-    if(id){
-      console.log("je vais supprimer la ligne "+id);
+    if(id){      
       this.cryptoService.deleteMovment(id).subscribe(()=>this.init());
     }
     

@@ -16,8 +16,7 @@ export class CryptoCreationComponent implements OnInit {
   
   }
 
-  addNameCrypto(name : string, gecko:string){
-    console.log(name);
+  addNameCrypto(name : string, gecko:string){    
     this.cryptoBusinessService.createCrypto(name,gecko).subscribe(()=>this.router.navigateByUrl('/dashboard'));
   }
 
