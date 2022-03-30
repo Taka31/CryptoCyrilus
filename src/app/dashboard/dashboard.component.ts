@@ -4,6 +4,8 @@ import { CryptoDescriptionSituation } from '../model/cryptoDescriptionSituation'
 import { CoingeckoService } from '../coingecko.service';
 import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
+import { GlobalSituation } from '../model/globalSituation';
+import { Deposit } from '../model/deposit';
 
 @Component({
   selector: 'app-dashboard',
@@ -19,7 +21,9 @@ export class DashboardComponent implements OnInit {
   isLoading:boolean =true;
   isAllowed:boolean =false;
   isInformationHidden=false;
+  globalSituation : GlobalSituation={earnedLost:0,sumSituationActual:0,investedMoney:0,percentageBenefits:0};
   cryptoToAdd="";
+  eurToDollar: number =0;
 
   ngOnInit(): void {   
 
@@ -39,7 +43,7 @@ export class DashboardComponent implements OnInit {
         this.cryptoService.getMyCryptos().subscribe(cryptos =>{
           this.myCryptos=cryptos;          
           this.updateListCryptoAvailable();
-          this.updatePrice();
+          this.updatePrice();         
           this.isLoading=false;          
         });
       }else{
@@ -60,7 +64,6 @@ export class DashboardComponent implements OnInit {
   }
 
   updatePrice(){
-
     this.geckoService.price(this.myCryptos).subscribe((x)=>{
       var obj = JSON.parse(JSON.stringify(x));      
 
@@ -69,9 +72,42 @@ export class DashboardComponent implements OnInit {
           element.actual_price=obj[element.api_name]["usd"];
         }        
       })
-    }
 
+      if(obj['tether-eurt']){       
+        this.eurToDollar = obj['tether-eurt']["usd"];
+      }     
+      this.updateGlobalSituation();
+
+    }
     );
+  }
+
+  updateGlobalSituation(){    
+    this.cryptoService.getGlobalsituation().subscribe(deposits=>{
+
+      this.manageInvestedMonney(deposits);
+
+      this.myCryptos.forEach(element=>{
+        this.globalSituation.earnedLost+=element.earned_lost;        
+        var sumSituationActual= element.actual_price*element.number_owned - element.invested_money;
+        if(sumSituationActual){
+          this.globalSituation.sumSituationActual+=sumSituationActual;       
+        }      
+      })      
+      this.globalSituation.percentageBenefits=this.globalSituation.sumSituationActual/this.globalSituation.investedMoney;
+    })
+  }
+
+  manageInvestedMonney(deposits : Deposit[]) : void {
+
+    deposits.forEach(element => {
+      if(element.currency===1){              
+        this.globalSituation.investedMoney+=(element.amount*this.eurToDollar);
+      }else{
+        this.globalSituation.investedMoney+=element.amount;
+      }
+    });
+
   }
 
   hideInformation(){
@@ -85,6 +121,7 @@ export class DashboardComponent implements OnInit {
     this.isAllowed =false;
     this.isInformationHidden=false;
     this.cryptoToAdd="";
+    this.globalSituation={earnedLost:0,sumSituationActual:0,investedMoney:0,percentageBenefits:0};
   }
 
   addCrypto(){

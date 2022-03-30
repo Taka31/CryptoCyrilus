@@ -1,0 +1,19 @@
+<h1>Add a deposit</h1>
+
+<button (click)=changeCurrency()>Euro/Dollar</button>  
+    
+<br /><br />   
+
+<div *ngIf="selectedCurrency==='Euro';then euro else dollar"></div>
+
+<ng-template #euro><span style="font-weight:bold; font-size:30px; color:red"> {{selectedCurrency}}</span></ng-template>
+<ng-template #dollar><span style="font-weight:bold; font-size:30px; color:blue"> {{selectedCurrency}}</span></ng-template>
+
+<br /><br />
+<label>Date</label>
+<input id="form_date" type="date" [ngModel]="actionModelForm.myDate | date:'yyyy-MM-dd'" (ngModelChange)="actionModelForm.myDate = $event" />
+<br /><br />
+<label for="form_amount">Amount</label>
+<input id="form_amount" type="number" placeholder="amount" [(ngModel)]="actionModelForm.amount" #amount  />
+<br /><br />
+<button (click)="add()" >ADD</button>

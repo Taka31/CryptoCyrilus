@@ -23,18 +23,13 @@ export class CoingeckoService {
 
   price(cryptos:CryptoDescriptionSituation[]) : Observable<Object>{
 
-    var preparedString : string="";
+    var preparedString : string="tether-eurt";
     var cpt :number =0;
 
     if(cryptos && cryptos.length!=0){
       cryptos.forEach((element)=>{
-
         if(element.api_name){
-          if(cpt==0){
-            preparedString+=element.api_name;
-          }else{
-            preparedString+=","+element.api_name;
-          } 
+         preparedString+=","+element.api_name;          
           cpt ++;         
         }
       })           

@@ -16,12 +16,13 @@ import { DetailCryptoComponent } from './detail-crypto/detail-crypto.component';
 import { environment } from '../environments/environment';
 import { CryptoCreationComponent } from './crypto-creation/crypto-creation.component';
 import { DatePipe } from '@angular/common';
+import { DepositComponent } from './deposit/deposit.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     DashboardComponent,  
-    AddActionComponent, MenuComponent, DetailCryptoComponent, CryptoCreationComponent, 
+    AddActionComponent, MenuComponent, DetailCryptoComponent, CryptoCreationComponent, DepositComponent, 
   ],
   imports: [
     BrowserModule,

@@ -15,10 +15,35 @@
         
         <button (click)=hideInformation()>Hide</button>     
         
-        <span class="my-cryptos-label">My Cryptos Lists : </span>
+        
 
         <br />
         <div *ngIf='isInformationHidden'>
+        <table>
+            <tr>
+                <th>Invested Monney</th>
+                <th>Earned/Lost</th>
+                <th>SituationActual</th>
+                <th>Percentage</th>
+            </tr>
+            <tr>
+                <td><span> |   
+                    *****</span>
+                </td>
+                <td><span> |   
+                    *****</span>
+                </td>
+                <td><span> |   
+                    *****</span>
+                </td>
+                <td [ngClass]="globalSituation.percentageBenefits >= 0 ? 'winner' : 'looser'"><span> |   
+                    {{globalSituation.percentageBenefits | percent }}</span>
+                </td>
+            </tr>
+        </table>
+
+        <span class="my-cryptos-label">My Cryptos Lists : </span>
+
         <table>
             <tr>
             <th>Crypto Name</th>
@@ -43,6 +68,30 @@
         </table> 
         </div> 
         <div *ngIf='!isInformationHidden'>
+            <table>
+                <tr>
+                    <th>Invested Monney</th>
+                    <th>Earned/Lost</th>
+                    <th>SituationActual</th>
+                    <th>Percentage</th>
+                </tr>
+                <tr>
+                    <td><span> |   
+                        {{globalSituation.investedMoney | number: '1.0-2'}} </span>                       
+                    </td>
+                    <td><span> |   
+                        {{globalSituation.earnedLost | number: '1.0-2'}}</span>
+                    </td>
+                    <td><span> |   
+                        {{globalSituation.sumSituationActual | number: '1.0-2'}}</span>
+                    </td>
+                    <td [ngClass]="globalSituation.percentageBenefits >= 0 ? 'winner' : 'looser'"><span> |   
+                        {{globalSituation.percentageBenefits | percent }}</span>
+                    </td>
+                </tr>
+            </table>
+    
+            <span class="my-cryptos-label">My Cryptos Lists : </span>
             <table>
                 <tr>
                 <th>Crypto Name</th>

@@ -1,6 +1,5 @@
-import { Component, OnInit, Type } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Router } from '@angular/router';
 import { Action } from '../model/action';
 import { TypeAction } from '../model/type';
 import { Movment } from '../model/movment';

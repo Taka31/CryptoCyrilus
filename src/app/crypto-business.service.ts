@@ -6,6 +6,8 @@ import { CryptoDescription } from './model/crypto';
 import { Action } from './model/action';
 import { CryptoDescriptionSituation } from './model/cryptoDescriptionSituation';
 import { AngularFireAuth } from '@angular/fire/auth';
+import { DatePipe } from '@angular/common'
+import { Deposit } from './model/deposit';
 
 const httpOptions ={
   headers : new HttpHeaders({
@@ -25,7 +27,7 @@ const httpOptionsWithAuthToken = (token:any) => ({
 })
 export class CryptoBusinessService {
 
-  constructor(private http:HttpClient, private auth:AngularFireAuth) { }
+  constructor(private http:HttpClient, private auth:AngularFireAuth, private datePipe:DatePipe) { }
 
 
   getMovments(id : string) : Observable<Movment[]>{
@@ -52,21 +54,17 @@ export class CryptoBusinessService {
     });
   }
 
-  getMyCryptos() : Observable<CryptoDescriptionSituation[]> {
+  getNotUsedCryptoByUser() : Observable<CryptoDescriptionSituation[]>{
     return new Observable<CryptoDescriptionSituation[]>(observer=>{
       this.auth.user.subscribe(user=>{
         user && user.getIdToken().then(token=>{
           if(user && token){
-            this.http.get<CryptoDescriptionSituation[]>(`/api/users/${user.uid}/my-cryptos`,httpOptionsWithAuthToken(token)).subscribe(cryptoDescription=>{
-              observer.next(cryptoDescription);
-            });
-          }else{
-            observer.next([]);
+            this.http.get<CryptoDescriptionSituation[]>(`/api/get-not-used-Crypto/${user.uid}`).subscribe(cryptos=> observer.next(cryptos))
           }
-        });
+        })
       })
-    })    
-  } 
+    })
+  }
 
   createCrypto(name:string, gecko:string):Observable<CryptoDescription>{    
     return this.http.post<CryptoDescription>(`/api/create-crypto`,{name,gecko},httpOptions);
@@ -101,19 +99,7 @@ export class CryptoBusinessService {
         })
       })
     })
-  }
-
-  getNotUsedCryptoByUser() : Observable<CryptoDescriptionSituation[]>{
-    return new Observable<CryptoDescriptionSituation[]>(observer=>{
-      this.auth.user.subscribe(user=>{
-        user && user.getIdToken().then(token=>{
-          if(user && token){
-            this.http.get<CryptoDescriptionSituation[]>(`/api/get-not-used-Crypto/${user.uid}`).subscribe(cryptos=> observer.next(cryptos))
-          }
-        })
-      })
-    })
-  }
+  }  
 
   initializeNewCrypto(id_crypto:string) : Observable<any>{
     return new Observable<any>(observer=>{
@@ -129,7 +115,7 @@ export class CryptoBusinessService {
     })
   }
 
-  checkUser(): Observable<Object>{
+  checkUser(): Observable<Object>{  
     return new Observable<Object>(observer=>{
       this.auth.user.subscribe(user=>{
         user && user.getIdToken().then(token=>{
@@ -139,5 +125,59 @@ export class CryptoBusinessService {
         })
       })    
     }) 
+  }
+
+  getGlobalsituation(): Observable<Deposit[]>{
+    return new Observable<Deposit[]>(observer=>{
+        this.auth.user.subscribe(user=>{
+          user && user.getIdToken().then(token=>{
+            if(user && token){
+              this.http.get<Deposit[]>(`/api/globalSituation`,httpOptionsWithAuthToken(token)).subscribe(deposits=>observer.next(deposits))
+            }
+            else{
+              observer.next([]);
+            }
+          })
+        }) 
+      }      
+    );
+  }
+
+  getMyCryptos() : Observable<CryptoDescriptionSituation[]> {
+    return new Observable<CryptoDescriptionSituation[]>(observer=>{
+      this.auth.user.subscribe(user=>{
+        user && user.getIdToken().then(token=>{
+          if(user && token){
+            this.http.get<CryptoDescriptionSituation[]>(`/api/users/${user.uid}/my-cryptos`,httpOptionsWithAuthToken(token)).subscribe(cryptoDescription=>{
+              observer.next(cryptoDescription);
+            });
+          }else{
+            observer.next([]);
+          }
+        });
+      })
+    })    
+  } 
+
+ 
+
+
+  addDeposit(deposit: Deposit){
+
+    const amount : number = deposit.amount;    
+    const date_deposit=this.datePipe.transform(deposit.myDate,'yyyy-MM-dd');    
+    const is_euro : number =deposit.currency;
+    
+
+    return new Observable<Object>(observer=>{
+      this.auth.user.subscribe(user=>{
+        user && user.getIdToken().then(token=>{
+          if(user && token){
+            this.http.post<Object>(`/api/addDeposit`,{amount,date_deposit,is_euro},httpOptionsWithAuthToken(token)).subscribe(object=>observer.next(object));
+          }
+        })
+      })
+    })
+
   }
 }
