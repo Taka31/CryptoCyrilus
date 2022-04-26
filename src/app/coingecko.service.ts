@@ -21,19 +21,26 @@ export class CoingeckoService {
     return this.http.get<Ping>('https://api.coingecko.com/api/v3/ping');
   }
 
-  price(cryptos:CryptoDescriptionSituation[]) : Observable<Object>{
+  price(preparedString:string) : Observable<Object>{
+    return this.http.get<Object>(`https://api.coingecko.com/api/v3/simple/price?ids=${preparedString}&vs_currencies=usd`)
+  }
 
-    var preparedString : string="tether-eurt";
+  prepareString(list : CryptoDescriptionSituation[]) : string {
+    var preparedString : string=""; 
     var cpt :number =0;
 
-    if(cryptos && cryptos.length!=0){
-      cryptos.forEach((element)=>{
+    if(list && list.length!=0){
+      list.forEach((element)=>{
         if(element.api_name){
-         preparedString+=","+element.api_name;          
+          if(cpt===0){
+            preparedString+=element.api_name; 
+          }else{
+            preparedString+=","+element.api_name; 
+          }
           cpt ++;         
         }
       })           
     }
-    return this.http.get<Object>(`https://api.coingecko.com/api/v3/simple/price?ids=${preparedString}&vs_currencies=usd`)
+    return preparedString;
   }
 }

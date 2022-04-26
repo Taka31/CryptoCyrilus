@@ -14,6 +14,7 @@ export class Action{
 			this.calculateStayAmount(previousAmount);			
 			this.calculateAveragePrice(previousAmount, previousPrice);	
 			this.calculateSellResult(previousPrice);
+			this.adaptInterestDisplay();
 	}	
 
 	calculateStayAmount(previousAmount:number){
@@ -42,6 +43,12 @@ export class Action{
 		if(this.movment.action===TypeAction.Sell){
 			this.resultSell=this.result - (this.movment.amount*previousPrice);
 			
+		}
+	}
+
+	adaptInterestDisplay(){		
+		if(this.movment.price===0){
+			this.movment.action=TypeAction.Interest;
 		}
 	}
 }

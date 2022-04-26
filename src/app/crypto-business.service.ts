@@ -8,6 +8,7 @@ import { CryptoDescriptionSituation } from './model/cryptoDescriptionSituation';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { DatePipe } from '@angular/common'
 import { Deposit } from './model/deposit';
+import { ExternalInvestment } from './model/externalInvestment';
 
 const httpOptions ={
   headers : new HttpHeaders({
@@ -101,7 +102,7 @@ export class CryptoBusinessService {
     })
   }  
 
-  initializeNewCrypto(id_crypto:string) : Observable<any>{
+  initializeNewCrypto(id_crypto:number) : Observable<any>{
     return new Observable<any>(observer=>{
       this.auth.user.subscribe(user=>{
         user && user.getIdToken().then(token=>{
@@ -127,15 +128,15 @@ export class CryptoBusinessService {
     }) 
   }
 
-  getGlobalsituation(): Observable<Deposit[]>{
-    return new Observable<Deposit[]>(observer=>{
+  getSumInvestedEuro(): Observable<Deposit>{
+    return new Observable<Deposit>(observer=>{
         this.auth.user.subscribe(user=>{
           user && user.getIdToken().then(token=>{
             if(user && token){
-              this.http.get<Deposit[]>(`/api/globalSituation`,httpOptionsWithAuthToken(token)).subscribe(deposits=>observer.next(deposits))
+              this.http.get<Deposit>(`/api/globalSituation`,httpOptionsWithAuthToken(token)).subscribe(deposit=>observer.next(deposit))
             }
             else{
-              observer.next([]);
+              observer.next();
             }
           })
         }) 
@@ -158,6 +159,34 @@ export class CryptoBusinessService {
       })
     })    
   } 
+
+  getExternalInvestment() : Observable<ExternalInvestment[]> {
+    return new Observable<ExternalInvestment[]>(observer=>{
+      this.auth.user.subscribe(user=>{
+        user && user.getIdToken().then(token=>{
+          if(user && token){
+            this.http.get<ExternalInvestment[]>(`/api/getExternalInvestment`,httpOptionsWithAuthToken(token)).subscribe(investments=>{
+              observer.next(investments);
+            })
+          }
+        })
+      })
+    })    
+  }
+
+  getInvestmentSumSituation() : Observable<Object>{
+    return new Observable<Object>(observer=>{
+      this.auth.user.subscribe(user=>{
+        user && user.getIdToken().then(token=>{
+          if(user && token){
+            this.http.get<ExternalInvestment[]>(`/api/getInvestmentSumSituation`,httpOptionsWithAuthToken(token)).subscribe(situation=>{
+              observer.next(situation);
+            })
+          }
+        })
+      })
+    })    
+  }
 
  
 

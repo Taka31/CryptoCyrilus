@@ -1,0 +1,17 @@
+th{
+    border: solid 1px black;
+    width: 150px;
+    background-color: rgb(215 113 113);
+}
+
+.looser
+{
+    color:red;
+    font-weight:bold;
+}
+
+.winner
+{
+    color:green;
+    font-weight:bold;
+}

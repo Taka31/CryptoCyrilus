@@ -1,127 +1,83 @@
 <span class="title-dashboard-label">Welcome on <span class="cyrilus-label">Cyrilus</span> Cryptus</span>
 
 <div *ngIf='isAllowed'>
+    <button (click)=hideInformation()>Hide my infomation</button>
+
+    <br />
+
+    <app-balance-report [isNotAllowed]="isInformationHidden"></app-balance-report>
+    <br /> <br />
     <div *ngIf='!isLoading'>
 
-        <select [(ngModel)]='cryptoToAdd' *ngFor='let crypto of myCryptosNotUsed'>
-            <option value={{crypto.id}}>{{crypto.name}}</option>
-            <option value=0>Add...</option>
+        <h1>Crypto Listing </h1>
+        <select [(ngModel)]='cryptoToAdd'>            
+            <option [value]=crypto.id *ngFor='let crypto of myCryptosNotUsed'>{{crypto.name}}</option>
         </select>
+        <button (click)=addCrypto()>addCrypto</button>
+        <br /><br />
 
-        
-        <button (click)=addCrypto()>addCrypto</button>     
-
-        <br /> <br />
-        
-        <button (click)=hideInformation()>Hide</button>     
-        
-        
-
-        <br />
         <div *ngIf='isInformationHidden'>
-        <table>
-            <tr>
-                <th>Invested Monney</th>
-                <th>Earned/Lost</th>
-                <th>SituationActual</th>
-                <th>Percentage</th>
-            </tr>
-            <tr>
-                <td><span> |   
-                    *****</span>
-                </td>
-                <td><span> |   
-                    *****</span>
-                </td>
-                <td><span> |   
-                    *****</span>
-                </td>
-                <td [ngClass]="globalSituation.percentageBenefits >= 0 ? 'winner' : 'looser'"><span> |   
-                    {{globalSituation.percentageBenefits | percent }}</span>
-                </td>
-            </tr>
-        </table>
-
-        <span class="my-cryptos-label">My Cryptos Lists : </span>
-
-        <table>
-            <tr>
-            <th>Crypto Name</th>
-            <th>Number owned</th>
-            <th>Position Price</th>
-            <th>Invested money</th>
-            <th>Earned</th>
-            <th>Actual Price</th>
-            <th>Situation</th>
-            <th>% benefits</th>
-            </tr>
-            <tr *ngFor='let crypto of myCryptos'>
-                <td><a routerLinkActive="active" routerLink="/cryptoDetail/{{crypto.id}}/{{crypto.name}}" class="crypto-name-link-label">{{crypto.name}}</a></td>
-                <td><span> |   *****</span></td>
-                <td><span> |   {{crypto.position_price | number: '1.0-4'}}</span></td>
-                <td><span> |   *****</span></td>
-                <td><span> |   *****</span></td>
-                <td><span> |   {{crypto.actual_price | number: '1.0-4'}}</span></td>
-                <td><span> |   *****</span></td>
-                <td [ngClass]="crypto.actual_price/crypto.position_price > 1 ? 'winner' : 'looser'"><span> | {{crypto.actual_price/crypto.position_price | percent }}</span></td>
-            </tr>
-        </table> 
-        </div> 
+            <table>
+                <tr>
+                    <th>Crypto Name</th>
+                    <th>Number owned</th>
+                    <th>Position Price</th>
+                    <th>Invested money</th>
+                    <th>Earned</th>
+                    <th>Actual Price</th>
+                    <th>Situation</th>
+                    <th>% benefits</th>
+                </tr>
+                <tr *ngFor='let crypto of myCryptos'>
+                    <td><a routerLinkActive="active" routerLink="/cryptoDetail/{{crypto.id}}/{{crypto.name}}"
+                            class="crypto-name-link-label">{{crypto.name}}</a></td>
+                    <td><span> | *****</span></td>
+                    <td><span> | {{crypto.position_price | number: '1.0-4'}}</span></td>
+                    <td><span> | *****</span></td>
+                    <td><span> | *****</span></td>
+                    <td><span> | {{crypto.actual_price | number: '1.0-4'}}</span></td>
+                    <td><span> | *****</span></td>
+                    <td [ngClass]="crypto.actual_price/crypto.position_price > 1 ? 'winner' : 'looser'"><span> |
+                            {{crypto.actual_price/crypto.position_price | percent }}</span></td>
+                </tr>
+            </table>
+        </div>
         <div *ngIf='!isInformationHidden'>
             <table>
                 <tr>
-                    <th>Invested Monney</th>
-                    <th>Earned/Lost</th>
-                    <th>SituationActual</th>
-                    <th>Percentage</th>
-                </tr>
-                <tr>
-                    <td><span> |   
-                        {{globalSituation.investedMoney | number: '1.0-2'}} </span>                       
-                    </td>
-                    <td><span> |   
-                        {{globalSituation.earnedLost | number: '1.0-2'}}</span>
-                    </td>
-                    <td><span> |   
-                        {{globalSituation.sumSituationActual | number: '1.0-2'}}</span>
-                    </td>
-                    <td [ngClass]="globalSituation.percentageBenefits >= 0 ? 'winner' : 'looser'"><span> |   
-                        {{globalSituation.percentageBenefits | percent }}</span>
-                    </td>
-                </tr>
-            </table>
-    
-            <span class="my-cryptos-label">My Cryptos Lists : </span>
-            <table>
-                <tr>
-                <th>Crypto Name</th>
-                <th>Number owned</th>
-                <th>Position Price</th>
-                <th>Invested money</th>
-                <th>Earned</th>
-                <th>Actual Price</th>
-                <th>Situation</th>
-                <th>% benefits</th>
+                    <th>Crypto Name</th>
+                    <th>Number owned</th>
+                    <th>Position Price</th>
+                    <th>Invested money</th>
+                    <th>Earned</th>
+                    <th>Actual Price</th>
+                    <th>Situation</th>
+                    <th>% benefits</th>
                 </tr>
                 <tr *ngFor='let crypto of myCryptos'>
-                    <td><a routerLinkActive="active" routerLink="/cryptoDetail/{{crypto.id}}/{{crypto.name}}" class="crypto-name-link-label">{{crypto.name}}</a></td>
-                    <td><span> |   {{crypto.number_owned | number: '1.0-4' }}</span></td>
-                    <td><span> |   {{crypto.position_price | number: '1.0-4' }}</span></td>
-                    <td><span> |   {{crypto.invested_money | number: '1.0-4' }}</span></td>
-                    <td><span> |   {{crypto.earned_lost | number: '1.0-4' }}</span></td>
-                    <td><span> |   {{crypto.actual_price | number: '1.0-4' }}</span></td>
-                    <td [ngClass]="crypto.actual_price*crypto.number_owned - crypto.invested_money > 0 ? 'winner' : 'looser'"><span> | {{crypto.actual_price*crypto.number_owned - crypto.invested_money | number: '1.0-2' }}</span></td>
-                    <td [ngClass]="crypto.actual_price/crypto.position_price > 1 ? 'winner' : 'looser'"><span> | {{crypto.actual_price/crypto.position_price | percent }}</span></td>
+                    <td><a routerLinkActive="active" routerLink="/cryptoDetail/{{crypto.id}}/{{crypto.name}}"
+                            class="crypto-name-link-label">{{crypto.name}}</a></td>
+                    <td><span> | {{crypto.number_owned | number: '1.0-8' }}</span></td>
+                    <td><span> | {{crypto.position_price | number: '1.0-4' }}</span></td>
+                    <td><span> | {{crypto.invested_money | number: '1.0-4' }}</span></td>
+                    <td><span> | {{crypto.earned_lost | number: '1.0-4' }}</span></td>
+                    <td><span> | {{crypto.actual_price | number: '1.0-4' }}</span></td>
+                    <td
+                        [ngClass]="crypto.actual_price*crypto.number_owned - crypto.invested_money > 0 ? 'winner' : 'looser'">
+                        <span> | {{crypto.actual_price*crypto.number_owned - crypto.invested_money | number: '1.0-2'
+                            }}</span></td>
+                    <td [ngClass]="crypto.actual_price/crypto.position_price > 1 ? 'winner' : 'looser'"><span> |
+                            {{crypto.actual_price/crypto.position_price | percent }}</span></td>
                 </tr>
-            </table> 
-        </div>  
+            </table>
+        </div>
     </div>
     <div *ngIf='isLoading'>
         <label>Loading...</label>
     </div>
+    <br /> <br />
+    <app-external-investment [isNotAllowed]="isInformationHidden"></app-external-investment>
 </div>
 <div *ngIf='!isAllowed'>
     <label class="allowed">you are not allowed to use this application, contact the admin</label>
 </div>
-
-

@@ -1,6 +1,7 @@
 export enum TypeAction{
     Sell="Sell",
-    Buy="Buy"
+    Buy="Buy",
+    Interest="Interest"
 }
 
 export enum TypeCurrency{

@@ -1,0 +1,59 @@
+<h1>Balance Report</h1>
+<div *ngIf='!isNotAllowed'>
+    <div *ngIf='!isLoading'>
+        <table>
+            <tr>
+                <th>Invested money €</th>
+                <th>Invested money $</th>
+                <th>SituationActual $</th>
+                <th>Earned / loss</th>
+                <th>External sum Investment situation</th>
+                <th>Total percentage loss / earned</th>
+            </tr>
+            <tr>
+                <td><span> | {{situation.amountEuro}}</span>
+                </td>
+                <td><span> | {{situation.amountDollar}}</span>
+                </td>
+                <td><span> | {{situation.sumSituation | number :'1.0-2'}}</span>
+                </td>
+                <td><span> | {{situation.sumEarnedLoss | number :'1.0-2'}}</span>
+                </td>
+                <td><span> | {{situation.sumExternalInvestmentSituation | number :'1.0-2'}}</span>
+                </td>
+                <td><span [ngClass]="situation.total > 1 ? 'winner' : 'looser'"> | {{situation.total | number :
+                        '1.0-2'}} | {{situation.totalPercentage | percent :'1.0-2'}}</span>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div *ngIf='isLoading'>
+        <label>Loading...</label>
+    </div>
+</div>
+<div *ngIf='isNotAllowed'>
+    <table>
+        <tr>
+            <th>Invested money €</th>
+            <th>Invested money $</th>
+            <th>SituationActual $</th>
+            <th>Earned / loss</th>
+            <th>External sum Investment situation</th>
+            <th>Total percentage loss / earned</th>
+        </tr>
+        <tr>
+            <td><span> | *****</span>
+            </td>
+            <td><span> | *****</span>
+            </td>
+            <td><span> | *****</span>
+            </td>
+            <td><span> | *****</span>
+            </td>
+            <td><span> | *****</span>
+            </td>
+            <td><span> |*****</span>
+            </td>
+        </tr>
+    </table>
+</div>

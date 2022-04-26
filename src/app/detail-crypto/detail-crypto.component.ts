@@ -72,7 +72,14 @@ export class DetailCryptoComponent implements OnInit {
   }
 
   changePosition() {
-    this.typeActionForm==TypeAction.Buy?this.typeActionForm=TypeAction.Sell:this.typeActionForm=TypeAction.Buy;    
+
+    if(this.typeActionForm==TypeAction.Buy){
+      this.typeActionForm=TypeAction.Sell;
+    }else if(this.typeActionForm==TypeAction.Sell){
+      this.typeActionForm=TypeAction.Interest;
+    }else{
+      this.typeActionForm=TypeAction.Buy;
+    }    
   }
 
   addMovment(): void{
@@ -80,6 +87,11 @@ export class DetailCryptoComponent implements OnInit {
     var sellBuyBoolean=0;
     if(this.typeActionForm==TypeAction.Sell){
       sellBuyBoolean=1;
+    }
+
+    // Interest control, price is always equal to 0
+    if(this.typeActionForm==TypeAction.Interest){
+      this.actionModelForm.movment.price=0;
     }
 
     const dateTransform=this.datepipe.transform(this.actionModelForm.movment.date,'yyyy-MM-dd');

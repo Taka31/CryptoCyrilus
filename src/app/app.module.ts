@@ -17,12 +17,14 @@ import { environment } from '../environments/environment';
 import { CryptoCreationComponent } from './crypto-creation/crypto-creation.component';
 import { DatePipe } from '@angular/common';
 import { DepositComponent } from './deposit/deposit.component';
+import { ExternalInvestmentComponent } from './external-investment/external-investment.component';
+import { BalanceReportComponent } from './balance-report/balance-report.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     DashboardComponent,  
-    AddActionComponent, MenuComponent, DetailCryptoComponent, CryptoCreationComponent, DepositComponent, 
+    AddActionComponent, MenuComponent, DetailCryptoComponent, CryptoCreationComponent, DepositComponent, ExternalInvestmentComponent, BalanceReportComponent, 
   ],
   imports: [
     BrowserModule,

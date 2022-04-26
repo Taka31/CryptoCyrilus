@@ -33,14 +33,17 @@
     
     <br />
 
-    <button (click)=changePosition()>BUY/SELL</button>  
+    <button (click)=changePosition()>BUY/SELL/INTEREST</button>  
     
     <br /><br />   
 
-    <div *ngIf="typeActionForm==='Sell';then sell else buy"></div>
+    <div *ngIf="typeActionForm==='Sell';then sell"></div>
+    <div *ngIf="typeActionForm==='Buy';then buy"></div>
+    <div *ngIf="typeActionForm==='Interest';then interest"></div>
 
     <ng-template #sell><span style="font-weight:bold; font-size:30px; color:red"> {{typeActionForm}}</span></ng-template>
     <ng-template #buy><span style="font-weight:bold; font-size:30px; color:blue"> {{typeActionForm}}</span></ng-template>
+    <ng-template #interest><span style="font-weight:bold; font-size:30px; color:yellow"> {{typeActionForm}}</span></ng-template>
    
     
     <br /><br />
